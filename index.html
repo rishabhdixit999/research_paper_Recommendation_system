@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Research Paper</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Verdana', serif;
+            background: linear-gradient(to right, #0052D4, #65C7F7, #9CECFB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .login {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 10px;
+            width: 80%;
+        }
+
+        h1 {
+            color: #2d4059;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: #2d4059;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ff9a9e;
+        }
+
+        .table-wrapper-scroll-y {
+            display: block;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px; /* Added margin between tables */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px; /* Added margin between tables */
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #2d4059;
+        }
+
+        th {
+            background: #2d4059;
+            color: #ffffff;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background: #2d4059;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #ff9a9e;
+        }
+
+        hr {
+            border: 1px solid #2d4059;
+            margin: 40px 0;
+        }
+
+        h1:not(:first-child) {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login">
+        <h1>Research Paper Recommendation</h1>
+
+        <div>
+            <form action="{{ url_for('predict')}}" method="post">
+                <div class="form-group">
+                    <input type="text" name="experience" class="form-control"
+                        placeholder="Research paper title or keywords" required="required" />
+                </div>
+                <button type="submit" class="btn btn-primary">Get Recommendations</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <h1>Result KNN</h1>
+        <form action="{{ url_for('database')}}" method="post">
+            <div class="table-wrapper-scroll-y">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reseach Paper Title</th>
+                            <th>Rate the Recommendation </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key in result_knn %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ key }}</td>
+                            <td>
+                                <select name="Rating">
+                                    <option value="One">1</option>
+                                    <option value="two">2</option>
+                                    <option value="three">3</option>
+                                    <option value="four">4</option>
+                                    <option value="five">5</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+
+        <hr>
+
+        <h1>Result TF-IDF</h1>
+        <form action="{{ url_for('database')}}" method="post">
+            <div class="table-wrapper-scroll-y">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reseach Paper Title</th>
+                            <th>Rate the Recommendation </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key in result_tfidf %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ key }}</td>
+                            <td>
+                                <select name="Rating">
+                                    <option value="One">1</option>
+                                    <option value="two">2</option>
+                                    <option value="three">3</option>
+                                    <option value="four">4</option>
+                                    <option value="five">5</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+
+        <hr>
+
+        <h1>Result word-vector</h1>
+        <form action="{{ url_for('database')}}" method="post">
+            <div class="table-wrapper-scroll-y">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reseach Paper Title</th>
+                            <th>Rate the Recommendation </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key in result_word %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ key }}</td>
+                            <td>
+                                <select name="Rating">
+                                    <option value="One">1</option>
+                                    <option value="two">2</option>
+                                    <option value="three">3</option>
+                                    <option value="four">4</option>
+                                    <option value="five">5</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+
+        <hr>
+
+        <h1>Result collaborative</h1>
+        <form action="{{ url_for('database')}}" method="post">
+            <div class="table-wrapper-scroll-y">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reseach Paper Title</th>
+                            <th>Rate the Recommendation </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key in result_collaborative %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ key }}</td>
+                            <td>
+                                <select name="Rating">
+                                    <option value="One">1</option>
+                                    <option value="two">2</option>
+                                    <option value="three">3</option>
+                                    <option value="four">4</option>
+                                    <option value="five">5</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+
+    </div>
+
+</body>
+
+</html>
